@@ -16,7 +16,7 @@ A sophisticated web application that leverages **Google Gemini AI** to provide p
 * **Deployment**: Vercel
 
 ---
-
+### 🌐 [If you want to try the web version, I highly recommend visiting here!](https://ai-analyzer-hub.vercel.app/instagram-analyzer)
 ## ⚙️ Installation & Setup
 
 If you want to run this project locally, follow these steps:
