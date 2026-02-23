@@ -10,7 +10,7 @@ A sophisticated web application that leverages **Google Gemini AI** to provide p
 
 ## 🛠 Tech Stack
 * **Framework**: Next.js 15 (App Router)
-* **AI**: Google Generative AI (Gemini 2.0 Flash)
+* **AI**: Google Generative AI (Gemini 2.5 Flash)
 * **Auth**: Clerk
 * **Styling**: Tailwind CSS
 * **Deployment**: Vercel
