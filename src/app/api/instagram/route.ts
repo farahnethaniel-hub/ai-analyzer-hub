@@ -1,70 +1,47 @@
-import { NextResponse } from 'next/server';
-import { GoogleGenerativeAI } from "@google/generative-ai";
-// 1. הוספת ה-Import של Clerk לאבטחה
+import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
-
-// המפתח נמשך מה-Environment Variables
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
+import { ApiError, REPORT_FORMAT, errorResponse, extractScore, generate, stripScore } from "@/lib/ai";
 
 export async function POST(req: Request) {
   try {
-    // 2. בדיקת המשתמש - מוודא שהבקשה מגיעה ממשתמש מחובר בלבד
     const { userId } = await auth();
-    
-    if (!userId) {
-      console.log("❌ Unauthorized attempt to Instagram API");
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    if (!userId) throw new ApiError("צריך להתחבר כדי להשתמש בכלי.", 401);
+
+    const body = await req.json().catch(() => ({}));
+    const username = String(body.username ?? "").trim().replace(/^@/, "");
+    const bio = String(body.bio ?? "").trim().slice(0, 1000);
+    const niche = String(body.niche ?? "").trim().slice(0, 300);
+    const content = String(body.content ?? "").trim().slice(0, 4000);
+
+    if (!username) throw new ApiError("הכניסו שם משתמש.");
+    if (!bio && !content) {
+      throw new ApiError("הדביקו את הביו או תיאור של התוכן, כדי שהניתוח יתבסס על מידע אמיתי.");
     }
 
-    const body = await req.json();
-    console.log("Full body received:", body);
+    const prompt = `אתה יועץ שיווק דיגיטלי ומיתוג באינסטגרם.
+נתח את החשבון @${username} רק לפי המידע שהמשתמש סיפק למטה.
+אין לך גישה לאינסטגרם, אז אל תמציא עוקבים, פוסטים או נתונים שלא מופיעים כאן.
+אם חסר מידע כדי לשפוט נושא מסוים, כתוב מה חסר.
 
-    const username = body.repoUrl; // השארתי את הלוגיקה שלך כפי שהיא
-    
-    if (!username) {
-       console.log("❌ Error: username is missing from body");
-       return NextResponse.json({ error: "שם משתמש חסר" }, { status: 400 });
-    }
+מבנה התשובה:
+## רושם ראשוני
+## ביו ומיצוב
+## אסטרטגיית תוכן
+## חוזקות
+## נקודות לשיפור
+המלצות ברורות ומעשיות.
+## ביו מוצע
+גרסה משופרת של הביו, עד 150 תווים.
+${REPORT_FORMAT}
 
-    console.log("--- DEBUG: Analyzing user: " + username + " ---");
+תחום העסק: ${niche || "לא צוין"}
+ביו: """${bio || "לא סופק"}"""
+תיאור התוכן והפוסטים: """${content || "לא סופק"}"""`;
 
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+    const text = await generate(prompt);
 
-    const prompt = `נתח את פרופיל האינסטגרם: ${username}.  אני רוצה שתתן חוות דעת מקצועית ומעמיקה על פרופיל האינסטגרם הבא:
-[תדביק כאן לינק או תיאור מלא של הפרופיל]
-
-תנתח את הפרופיל כאילו אתה מומחה לשיווק דיגיטלי, מיתוג אישי וגדילה אורגנית באינסטגרם.
-
-תתייחס לנקודות הבאות:
-תמונת פרופיל – רושם ראשוני, מקצועיות, התאמה לנישה
-ביו – בהירות, הנעה לפעולה, מיצוב ומיתוג
-Highlights – שימוש נכון, עיצוב, סדר
-פיד – אחידות, אסתטיקה, צבעים, סגנון
-איכות התוכן – ערך, בידול, רלוונטיות לקהל יעד
-קריאייטיב – פתיחים חזקים, הוקים, ויראליות פוטנציאלית
-קופי וכתיבה – בהירות, שכנוע, סגנון
-אסטרטגיית תוכן – האם יש קו ברור?
-רמת מקצועיות כללית
-פוטנציאל צמיחה
-
-לאחר הניתוח:
-תן רשימת נקודות לשיפור (ברורות ומעשיות)
-תן גם נקודות חוזק
-תסכם בציון כולל SCORE: 0-100
-תסביר למה נתת את הציון הזה
-תהיה ישיר, אמיתי ולא נחמד סתם. תדבר כמו יועץ אמיתי.`;
-    
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
-
-    console.log("--- DEBUG SUCCESS ---");
-    return NextResponse.json({ text: text });
-    
-  } catch (error: any) {
-    console.error("❌ ERROR:", error.message);
-    return NextResponse.json({ 
-      text: `שגיאה: ${error.message}. וודא שהמפתח תקין.` 
-    }, { status: 500 });
+    return NextResponse.json({ report: stripScore(text), score: extractScore(text) });
+  } catch (error) {
+    return errorResponse(error);
   }
 }

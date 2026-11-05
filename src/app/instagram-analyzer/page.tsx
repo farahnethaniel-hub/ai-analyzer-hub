@@ -1,299 +1,104 @@
-'use client';
-import { useState } from 'react';
-import Link from 'next/link';
-import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
-import { Lock } from "lucide-react";
-// הוספת ה-Import של האנימציה
-import { motion } from 'framer-motion';
+"use client";
+import { useState } from "react";
+import { Instagram } from "lucide-react";
+import ToolLayout from "@/components/ToolLayout";
+import Report from "@/components/Report";
+import AnalyzeButton, { ErrorNote } from "@/components/AnalyzeButton";
+import { requestReport, type ReportResult } from "@/lib/request";
+
+const field =
+  "w-full rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-white placeholder:text-neutral-600 focus:border-blue-500/60 focus:outline-none";
 
 export default function InstagramAnalyzer() {
-    const [username, setUsername] = useState('');
-    const [loading, setLoading] = useState(false);
-    const [result, setResult] = useState('');
+  const [username, setUsername] = useState("");
+  const [niche, setNiche] = useState("");
+  const [bio, setBio] = useState("");
+  const [content, setContent] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [result, setResult] = useState<ReportResult | null>(null);
 
-    const handleAnalyze = async () => {
-        if (!username) return alert("אחי, שכחת שם משתמש");
-        
-        setLoading(true);
-        setResult(""); 
-        
-        try {
-            const res = await fetch('/api/instagram', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ repoUrl: username }), 
-            });
-            
-            const data = await res.json();
-            setResult(data.result || data.text || "סיימנו, בדוק את הטרמינל");
-        } catch (e) {
-            setResult("תקלה בחיבור");
-        } finally {
-            setLoading(false);
-        }
-    };
+  const ready = username.trim() && (bio.trim() || content.trim());
 
-    const scoreMatch = result.match(/SCORE:\s*(\d+)/);
-    const score = scoreMatch ? parseInt(scoreMatch[1]) : null;
+  const analyze = async () => {
+    if (!ready) return;
+    setLoading(true);
+    setError(null);
+    try {
+      setResult(await requestReport("/api/instagram", { username, niche, bio, content }));
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "הניתוח נכשל.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    return (
-        /* שינוי ה-main ל-motion.main והוספת הגדרות ה-Fade */
-        <motion.main 
-            initial={{ opacity: 0 }} 
-            animate={{ opacity: 1 }} 
-            transition={{ duration: 0.8, ease: "easeOut" }}
-            style={{ 
-                backgroundColor: '#030303', 
-                minHeight: '100vh', 
-                color: 'white',
-                fontFamily: 'Inter, system-ui, -apple-system, sans-serif', 
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center'
-            }}
+  return (
+    <ToolLayout
+      title="Instagram Analyzer"
+      subtitle="ניתוח מיתוג ותוכן לחשבון עסקי, עם המלצות וביו משופר"
+      icon={<Instagram size={30} />}
+      lockedText="כדי לנתח חשבון אינסטגרם עסקי, התחברו לחשבון."
+    >
+      {result ? (
+        <Report
+          title={`@${username.replace(/^@/, "")}`}
+          report={result.report}
+          score={result.score}
+          onReset={() => setResult(null)}
+          resetLabel="ניתוח חשבון אחר"
+        />
+      ) : (
+        <form
+          className="flex flex-col gap-5"
+          onSubmit={(e) => {
+            e.preventDefault();
+            analyze();
+          }}
         >
-            <style jsx global>{`
-                @keyframes spin {
-                    0% { transform: rotate(0deg); }
-                    100% { transform: rotate(360deg); }
-                }
-            `}</style>
-
-            <div style={{
-                position: 'absolute',
-                top: '20%',
-                left: '20%',
-                width: '50%',
-                height: '20%',
-                background: 'radial-gradient(circle, rgba(147, 51, 234, 0.07) 0%, rgba(0,0,0,0) 10000%)',
-                filter: 'blur(100px)',
-                pointerEvents: 'none'
-            }} />
-
-            <div style={{ position: 'absolute', top: '40px', right: '40px', zIndex: 100 }}>
-                <Link href="/" style={{
-                    color: 'rgba(255, 255, 255, 0.4)',
-                    textDecoration: 'none',
-                    fontSize: '1.0rem',
-                    fontWeight: '700',
-                    letterSpacing: '1.5px',
-                    textTransform: 'uppercase',
-                    transition: 'all 0.2s ease'
-                }}
-                onMouseEnter={(e) => { e.currentTarget.style.color = 'white'; }}
-                onMouseLeave={(e) => { e.currentTarget.style.color = 'rgba(255, 255, 255, 0.4)'; }}
-                >
-                    חזרה לתפריט הראשי
-                </Link>
+          <div className="grid gap-5 sm:grid-cols-2">
+            <div>
+              <label htmlFor="ig-user" className="mb-2 block text-sm font-bold text-neutral-400">
+                שם משתמש
+              </label>
+              <input id="ig-user" dir="ltr" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="@yourbusiness" className={field} />
             </div>
-
-            <div style={{ 
-                position: 'relative', 
-                zIndex: 1, 
-                display: 'flex', 
-                flexDirection: 'column', 
-                alignItems: 'center', 
-                paddingTop: '80px',
-                width: '100%'
-            }}>
-                
-                <h1 style={{
-                    fontSize: '4.0rem',
-                    fontWeight: '900',
-                    letterSpacing: '-3px',
-                    fontFamily: 'inherit'
-                }}>
-                    Instagram Analyzer
-                </h1>
-
-                <p style={{ 
-                    color: '#b3b3b3' ,
-                    fontSize: '17px', 
-                    fontWeight: 'bold', 
-                    fontFamily: 'Arial, Helvetica, sans-serif',
-                    direction: 'rtl',
-                    textAlign: 'center',
-                    marginTop: '15px',
-                    letterSpacing: 'normal'
-                }}>
-                    ניתוח חשבון אינסטגרם מבוסס <span style={{ direction: 'ltr' }}>AI</span>
-                </p>
-
-                <div style={{ marginTop: '50px', width: '100%', maxWidth: '550px', padding: '0 20px' }}>
-                    
-                    <SignedIn>
-                        {loading ? (
-                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px', marginTop: '40px' }}>
-                                <div style={{
-                                    width: '40px',
-                                    height: '40px',
-                                    border: '3px solid rgba(255,255,255,0.05)',
-                                    borderTop: '3px solid #e5e5e5', 
-                                    borderRadius: '50%',
-                                    animation: 'spin 1s linear infinite'
-                                }}></div>
-                                <div style={{ 
-                                    color: '#a3a3a3', 
-                                    fontSize: '1.1rem', 
-                                    fontWeight: '700', 
-                                    direction: 'rtl',
-                                    textShadow: 'none' 
-                                }}>
-                                    מנתח נתונים במערכת...
-                                </div>
-                            </div>
-                        ) : (
-                            <>
-                                <div style={{ 
-                                    display: 'flex', 
-                                    justifyContent: 'space-between', 
-                                    alignItems: 'flex-end', 
-                                    marginBottom: '10px' 
-                                }}>
-                                    <div>
-                                        {score !== null && (
-                                            <div style={{ display: 'flex', alignItems: 'baseline', gap: '5px' }}>
-                                                <span style={{ 
-                                                    fontSize: '1.6rem', 
-                                                    fontWeight: '900', 
-                                                    color: score >= 80 ? '#4ade80' : '#fb923c',
-                                                    textShadow: 'none' 
-                                                }}>
-                                                    {score}
-                                                </span>
-                                            </div>
-                                        )}
-                                    </div>
-                                    <div style={{ 
-                                        color: 'rgba(255, 255, 255, 0.3)', 
-                                        fontSize: '0.9rem', 
-                                        fontWeight: 'bold', 
-                                        letterSpacing: '2px', 
-                                        textAlign: 'right'
-                                    }}>
-                                        INSTAGRAM PROFILE / שם משתמש
-                                    </div>
-                                </div>
-
-                                <div style={{
-                                    backgroundColor: 'rgba(255, 255, 255, 0.03)',
-                                    border: '1px solid rgba(255, 255, 255, 0.08)',
-                                    borderRadius: '20px',
-                                    padding: '40px',
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    gap: '20px',
-                                    backdropFilter: 'blur(10px)'
-                                }}>
-                                    <input 
-                                        value={username}
-                                        onChange={(e) => setUsername(e.target.value)}
-                                        type="text" 
-                                        placeholder="Username..."
-                                        style={{
-                                            width: '100%',
-                                            background: 'rgba(0,0,0,0.2)',
-                                            border: '1px solid rgba(255, 255, 255, 0.1)',
-                                            padding: '15px',
-                                            borderRadius: '12px',
-                                            color: 'white',
-                                            fontSize: '1rem',
-                                            outline: 'none',
-                                            textAlign: 'center'
-                                        }}
-                                    />
-                                    
-                                    <button 
-                                        onClick={handleAnalyze}
-                                        style={{
-                                            backgroundColor: '#0a0a0a',
-                                            color: 'rgba(255, 255, 255, 0.5)',
-                                            padding: '12px 45px',
-                                            borderRadius: '9999px',
-                                            border: '1px solid rgba(255, 255, 255, 0.1)',
-                                            fontWeight: '600',
-                                            fontSize: '1rem',
-                                            cursor: 'pointer',
-                                            transition: 'all 0.3s ease',
-                                            outline: 'none'
-                                        }}
-                                        onMouseEnter={(e) => {
-                                            e.currentTarget.style.backgroundColor = '#111111';
-                                            e.currentTarget.style.color = '#ffffff';
-                                            e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.3)';
-                                            e.currentTarget.style.transform = 'translateY(-1px)';
-                                        }}
-                                        onMouseLeave={(e) => {
-                                            e.currentTarget.style.backgroundColor = '#0a0a0a';
-                                            e.currentTarget.style.color = 'rgba(255, 255, 255, 0.5)';
-                                            e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
-                                            e.currentTarget.style.transform = 'translateY(0)';
-                                        }}
-                                    >
-                                        Analyze profile
-                                    </button>
-
-                                    {result && (
-                                        <div style={{
-                                            marginTop: '20px',
-                                            padding: '25px',
-                                            backgroundColor: 'rgba(255,255,255,0.02)',
-                                            borderRadius: '15px',
-                                            border: '1px solid rgba(255,255,255,0.05)',
-                                            textAlign: 'right',
-                                            direction: 'rtl'
-                                        }}>
-                                            <div style={{ color: 'rgba(255,255,255,0.2)', fontSize: '0.7rem', fontWeight: 'bold', marginBottom: '15px', letterSpacing: '1px' }}>
-                                                ANALYSIS REPORT
-                                            </div>
-                                            <div style={{ 
-                                                fontSize: '1rem', 
-                                                lineHeight: '1.7', 
-                                                color: '#d1d5db',
-                                                whiteSpace: 'pre-wrap',
-                                                fontFamily: 'system-ui'
-                                            }}>
-                                                {result.replace(/SCORE:\s*\d+/, '').trim()}
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
-                            </>
-                        )}
-                    </SignedIn>
-
-                    <SignedOut>
-                        <div className="flex flex-col items-center justify-center mt-10 bg-[#121212] border border-gray-800 rounded-3xl p-10 text-center shadow-[0_0_30px_-10px_rgba(255,255,255,0.05)]" dir="rtl">
-                            
-                            <div className="bg-black p-4 rounded-full mb-5 border border-gray-800 shadow-[0_0_15px_rgba(255,255,255,0.05)]">
-                                <Lock size={36} className="text-white" />
-                            </div>
-                            
-                            <h2 className="text-2xl font-bold mb-3 text-white">אזור לחברים בלבד</h2>
-                            <p className="text-gray-400 mb-8 text-base leading-relaxed">
-                                כדי לנתח פרופילי אינסטגרם לעומק, אנא התחבר למערכת.
-                            </p>
-                            
-                            <div className="flex flex-col items-center gap-5 w-full">
-                                <SignInButton mode="modal">
-                                    <button className="bg-[#1a1a1a] border border-gray-800 hover:border-white hover:text-white text-gray-300 px-10 py-3 rounded-full font-bold transition-all duration-300 shadow-sm hover:shadow-[0_0_15px_-5px_rgba(255,255,255,0.3)] cursor-pointer w-full max-w-[250px]">
-                                        התחבר עכשיו
-                                    </button>
-                                </SignInButton>
-
-                                <Link 
-                                    href="/" 
-                                    className="text-gray-500 hover:text-white text-sm font-medium transition-colors border-b border-transparent hover:border-white pb-1"
-                                >
-                                    חזרה לתפריט הראשי
-                                </Link>
-                            </div>
-
-                        </div>
-                    </SignedOut>
-
-                </div>
+            <div>
+              <label htmlFor="ig-niche" className="mb-2 block text-sm font-bold text-neutral-400">
+                תחום העסק
+              </label>
+              <input id="ig-niche" value={niche} onChange={(e) => setNiche(e.target.value)} placeholder="למשל: סטודיו לפילאטיס בתל אביב" className={field} />
             </div>
-        </motion.main>
-    );
+          </div>
+
+          <div>
+            <label htmlFor="ig-bio" className="mb-2 block text-sm font-bold text-neutral-400">
+              הביו הנוכחי
+            </label>
+            <textarea id="ig-bio" value={bio} onChange={(e) => setBio(e.target.value)} placeholder="העתיקו את הביו מהפרופיל" className={`${field} h-28 resize-none`} />
+          </div>
+
+          <div>
+            <label htmlFor="ig-content" className="mb-2 block text-sm font-bold text-neutral-400">
+              על מה הפוסטים והרילס?
+            </label>
+            <textarea
+              id="ig-content"
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              placeholder="תארו בקצרה את התוכן: סוגי פוסטים, נושאים, כמה פעמים בשבוע מפרסמים, מה עובד ומה פחות"
+              className={`${field} h-36 resize-none`}
+            />
+            <p className="mt-2 text-sm text-neutral-500">ה-AI לא נכנס לאינסטגרם, ולכן הניתוח מבוסס רק על מה שתכתבו כאן.</p>
+          </div>
+
+          <ErrorNote message={error} />
+
+          <div className="flex justify-center">
+            <AnalyzeButton loading={loading} disabled={!ready} onClick={analyze} label="נתחו את החשבון" loadingLabel="מנתח את החשבון..." />
+          </div>
+        </form>
+      )}
+    </ToolLayout>
+  );
 }
