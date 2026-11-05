@@ -1,26 +1,50 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-heebo), system-ui, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  color-scheme: dark;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-heebo), system-ui, sans-serif;
+}
+
+/* Markdown reports returned by the AI */
+.report {
+  color: #d4d4d4;
+  font-size: 1.05rem;
+  line-height: 1.8;
+}
+.report h1,
+.report h2,
+.report h3 {
+  color: #fff;
+  font-weight: 700;
+  margin: 1.6rem 0 0.6rem;
+}
+.report h1 { font-size: 1.5rem; }
+.report h2 { font-size: 1.25rem; }
+.report h3 { font-size: 1.1rem; }
+.report > :first-child { margin-top: 0; }
+.report p { margin: 0.5rem 0; }
+.report ul,
+.report ol {
+  margin: 0.5rem 0;
+  padding-inline-start: 1.4rem;
+}
+.report ul { list-style: disc; }
+.report ol { list-style: decimal; }
+.report li { margin: 0.3rem 0; }
+.report li::marker { color: #60a5fa; }
+.report strong { color: #fff; }
+.report code {
+  background: #1f1f1f;
+  border-radius: 6px;
+  padding: 0.1rem 0.35rem;
+  font-size: 0.9em;
+  direction: ltr;
+  unicode-bidi: isolate;
 }

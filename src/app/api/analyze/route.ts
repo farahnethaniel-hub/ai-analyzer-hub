@@ -1,36 +1,49 @@
-import { NextResponse } from 'next/server';
-import { GoogleGenerativeAI } from "@google/generative-ai";
-// 1. הוספת ה-Import של Clerk
+import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
+import { ApiError, REPORT_FORMAT, errorResponse, extractScore, getModel, stripScore } from "@/lib/ai";
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+const MAX_CV_CHARS = 20000;
+const MAX_JOB_CHARS = 8000;
 
 export async function POST(req: Request) {
   try {
-    // 2. בדיקת המשתמש - חוסם גישה למי שלא מחובר
     const { userId } = await auth();
-    if (!userId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    if (!userId) throw new ApiError("צריך להתחבר כדי להשתמש בכלי.", 401);
+
+    const body = await req.json().catch(() => ({}));
+    const cvText = String(body.cvText ?? "").trim();
+    const jobDescription = String(body.jobDescription ?? "").trim();
+
+    if (cvText.length < 50) {
+      throw new ApiError("לא הצלחנו לקרוא טקסט מהקובץ. ודאו שזה PDF עם טקסט ולא תמונה סרוקה.");
+    }
+    if (jobDescription.length < 20) {
+      throw new ApiError("הדביקו תיאור משרה מלא יותר כדי שנוכל להשוות.");
     }
 
-    const { cvText, jobDescription } = await req.json();
+    const prompt = `אתה מגייס טכני מנוסה. השווה בין קורות החיים לבין דרישות המשרה.
+אם הקובץ אינו קורות חיים, ציין זאת ותן ציון נמוך.
 
-    console.log("API KEY EXISTS:", !!process.env.GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+מבנה התשובה:
+## סיכום
+2-3 משפטים על רמת ההתאמה.
+## חוזקות
+## פערים מול המשרה
+## המלצות לשיפור קורות החיים
+המלצות מעשיות וקצרות.
+${REPORT_FORMAT}
 
-    const prompt = `נתח את קורות החיים מול דרישות המשרה. 
-ותן ציון מ0-100 כמה לדעתך האדם בעל קורות החיים אלו מתאים לדרישות המשרה . אם אתה מקבל קובץ שהוא לא קורות חיים או אינו עומד בדרישות המשרה - תן ציון בהתאם. שהתשובה לא תהיה ארוכה מידי
-לאחר מכן תן פירוט של חוזקות וחולשות בצורה של בולטים.
-דרישות המשרה: ${jobDescription}
-טקסט קורות החיים: ${cvText}`;
+דרישות המשרה:
+"""${jobDescription.slice(0, MAX_JOB_CHARS)}"""
 
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    
-    return NextResponse.json({ result: response.text() });
+קורות החיים:
+"""${cvText.slice(0, MAX_CV_CHARS)}"""`;
 
-  } catch (error: any) {
-    console.error("API ERROR:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    const result = await getModel().generateContent(prompt);
+    const text = result.response.text();
+
+    return NextResponse.json({ report: stripScore(text), score: extractScore(text) });
+  } catch (error) {
+    return errorResponse(error);
   }
 }
