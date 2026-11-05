@@ -2,7 +2,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight, Lock } from "lucide-react";
+import { ChevronRight, Lock } from "lucide-react";
 import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
 
 /** Shared frame for every tool page: back link, title, and a sign-in gate. */
@@ -21,36 +21,35 @@ export default function ToolLayout({
 }) {
   return (
     <motion.main
-      initial={{ opacity: 0, y: 8 }}
+      initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
-      className="mx-auto w-full max-w-3xl px-5 pb-20 pt-8"
+      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+      className="mx-auto w-full max-w-3xl px-5 pb-24 pt-8"
     >
-      <Link
-        href="/"
-        className="inline-flex items-center gap-2 text-sm font-semibold text-neutral-500 transition-colors hover:text-white"
-      >
-        <ArrowRight size={16} />
+      <Link href="/" className="inline-flex items-center gap-0.5 text-[15px] font-medium text-accent hover:underline">
+        <ChevronRight size={18} />
         כל הכלים
       </Link>
 
-      <div className="mt-8 mb-10 flex flex-col items-center text-center">
-        <div className="mb-5 rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-blue-400">{icon}</div>
-        <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl">{title}</h1>
-        <p className="mt-3 text-lg text-neutral-400">{subtitle}</p>
+      <div className="mt-10 mb-12 flex flex-col items-center text-center">
+        <div className="mb-6 grid h-16 w-16 place-items-center rounded-[20px] bg-surface text-ink shadow-[0_8px_30px_-10px_rgba(0,0,0,0.2)]">{icon}</div>
+        <h1 className="text-[40px] font-bold tracking-[-0.03em] sm:text-[56px]" dir="ltr">
+          {title}
+        </h1>
+        <p className="mt-3 max-w-xl text-[19px] leading-relaxed text-muted">{subtitle}</p>
       </div>
 
       <SignedIn>{children}</SignedIn>
 
       <SignedOut>
-        <div className="mx-auto flex max-w-md flex-col items-center rounded-3xl border border-white/10 bg-[#121212] p-10 text-center">
-          <div className="mb-5 rounded-full border border-white/10 bg-black p-4">
-            <Lock size={30} />
+        <div className="glass mx-auto flex max-w-md flex-col items-center rounded-[28px] p-10 text-center">
+          <div className="mb-5 grid h-14 w-14 place-items-center rounded-full bg-bg">
+            <Lock size={24} strokeWidth={1.6} />
           </div>
-          <h2 className="mb-2 text-xl font-bold">צריך להתחבר</h2>
-          <p className="mb-7 leading-relaxed text-neutral-400">{lockedText}</p>
+          <h2 className="mb-2 text-[22px] font-semibold">צריך להתחבר</h2>
+          <p className="mb-7 leading-relaxed text-muted">{lockedText}</p>
           <SignInButton mode="modal">
-            <button className="w-full max-w-[240px] cursor-pointer rounded-full bg-white px-8 py-3 font-bold text-black transition hover:bg-neutral-200">
+            <button className="w-full max-w-[240px] cursor-pointer rounded-full bg-accent px-8 py-3 text-[17px] font-medium text-white transition hover:bg-accent-hover">
               התחברות
             </button>
           </SignInButton>

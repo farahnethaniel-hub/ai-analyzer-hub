@@ -16,11 +16,12 @@ export default function AnalyzeButton({
 }) {
   return (
     <button
+      type="button"
       onClick={onClick}
       disabled={disabled || loading}
-      className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-blue-600 px-10 py-4 text-lg font-bold text-white transition hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-40 sm:w-auto"
+      className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-accent px-10 py-3.5 text-[17px] font-medium text-white transition hover:bg-accent-hover active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-35 sm:w-auto"
     >
-      {loading && <Loader2 className="animate-spin" size={20} />}
+      {loading && <Loader2 className="animate-spin" size={18} />}
       {loading ? loadingLabel : label}
     </button>
   );
@@ -29,7 +30,7 @@ export default function AnalyzeButton({
 export function ErrorNote({ message }: { message: string | null }) {
   if (!message) return null;
   return (
-    <p role="alert" className="rounded-2xl border border-red-500/30 bg-red-500/10 px-5 py-3 text-red-300">
+    <p role="alert" className="rounded-2xl border border-[#ff453a]/25 bg-[#ff453a]/[0.06] px-5 py-3.5 text-[15px] text-[#c4271d]">
       {message}
     </p>
   );

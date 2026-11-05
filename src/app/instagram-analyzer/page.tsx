@@ -7,7 +7,7 @@ import AnalyzeButton, { ErrorNote } from "@/components/AnalyzeButton";
 import { requestReport, type ReportResult } from "@/lib/request";
 
 const field =
-  "w-full rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-white placeholder:text-neutral-600 focus:border-blue-500/60 focus:outline-none";
+  "field";
 
 export default function InstagramAnalyzer() {
   const [username, setUsername] = useState("");
@@ -50,7 +50,7 @@ export default function InstagramAnalyzer() {
         />
       ) : (
         <form
-          className="flex flex-col gap-5"
+          className="glass flex flex-col gap-5 rounded-[28px] p-6 sm:p-8"
           onSubmit={(e) => {
             e.preventDefault();
             analyze();
@@ -58,13 +58,13 @@ export default function InstagramAnalyzer() {
         >
           <div className="grid gap-5 sm:grid-cols-2">
             <div>
-              <label htmlFor="ig-user" className="mb-2 block text-sm font-bold text-neutral-400">
+              <label htmlFor="ig-user" className="mb-2 block text-[14px] font-semibold text-muted">
                 שם משתמש
               </label>
               <input id="ig-user" dir="ltr" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="@yourbusiness" className={field} />
             </div>
             <div>
-              <label htmlFor="ig-niche" className="mb-2 block text-sm font-bold text-neutral-400">
+              <label htmlFor="ig-niche" className="mb-2 block text-[14px] font-semibold text-muted">
                 תחום העסק
               </label>
               <input id="ig-niche" value={niche} onChange={(e) => setNiche(e.target.value)} placeholder="למשל: סטודיו לפילאטיס בתל אביב" className={field} />
@@ -72,14 +72,14 @@ export default function InstagramAnalyzer() {
           </div>
 
           <div>
-            <label htmlFor="ig-bio" className="mb-2 block text-sm font-bold text-neutral-400">
+            <label htmlFor="ig-bio" className="mb-2 block text-[14px] font-semibold text-muted">
               הביו הנוכחי
             </label>
             <textarea id="ig-bio" value={bio} onChange={(e) => setBio(e.target.value)} placeholder="העתיקו את הביו מהפרופיל" className={`${field} h-28 resize-none`} />
           </div>
 
           <div>
-            <label htmlFor="ig-content" className="mb-2 block text-sm font-bold text-neutral-400">
+            <label htmlFor="ig-content" className="mb-2 block text-[14px] font-semibold text-muted">
               על מה הפוסטים והרילס?
             </label>
             <textarea
@@ -89,7 +89,7 @@ export default function InstagramAnalyzer() {
               placeholder="תארו בקצרה את התוכן: סוגי פוסטים, נושאים, כמה פעמים בשבוע מפרסמים, מה עובד ומה פחות"
               className={`${field} h-36 resize-none`}
             />
-            <p className="mt-2 text-sm text-neutral-500">ה-AI לא נכנס לאינסטגרם, ולכן הניתוח מבוסס רק על מה שתכתבו כאן.</p>
+            <p className="mt-2 text-sm text-muted">ה-AI לא נכנס לאינסטגרם, ולכן הניתוח מבוסס רק על מה שתכתבו כאן.</p>
           </div>
 
           <ErrorNote message={error} />

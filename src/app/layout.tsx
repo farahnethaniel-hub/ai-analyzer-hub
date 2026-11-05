@@ -21,35 +21,44 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <ClerkProvider>
       <html lang="he" dir="rtl">
-        <body className={`${heebo.variable} min-h-screen bg-[#0a0a0a] text-white antialiased`}>
-          <header className="sticky top-0 z-50 border-b border-white/5 bg-[#0a0a0a]/80 backdrop-blur">
-            <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5">
-              <Link href="/" className="flex items-center gap-2 font-extrabold tracking-tight">
-                <span className="grid h-8 w-8 place-items-center rounded-lg border border-white/20 text-xs font-light" dir="ltr">
+        <body className={`${heebo.variable} min-h-screen bg-bg text-ink`}>
+          <header className="sticky top-0 z-50 border-b border-line bg-[rgba(245,245,247,0.72)] backdrop-blur-xl backdrop-saturate-150">
+            <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-5">
+              <Link href="/" className="flex items-center gap-2.5 text-[15px] font-semibold tracking-tight">
+                <span className="grid h-7 w-7 place-items-center rounded-full bg-ink text-[10px] font-medium text-white" dir="ltr">
                   NF
                 </span>
                 <span dir="ltr">AI Analyzer Hub</span>
               </Link>
-              <div className="flex items-center">
+              <nav className="flex items-center gap-6 text-[14px] text-muted">
+                <Link href="/cv-analyzer" className="hidden transition-colors hover:text-ink sm:inline">
+                  קורות חיים
+                </Link>
+                <Link href="/repo-analyzer" className="hidden transition-colors hover:text-ink sm:inline">
+                  GitHub
+                </Link>
+                <Link href="/instagram-analyzer" className="hidden transition-colors hover:text-ink sm:inline">
+                  אינסטגרם
+                </Link>
                 <SignedOut>
                   <SignInButton mode="modal">
-                    <button className="cursor-pointer rounded-full border border-white/15 px-5 py-2 text-sm font-bold text-neutral-200 transition hover:border-blue-500 hover:text-blue-400">
+                    <button className="cursor-pointer rounded-full bg-ink px-4 py-1.5 text-[13px] font-medium text-white transition hover:opacity-85">
                       התחברות
                     </button>
                   </SignInButton>
                 </SignedOut>
                 <SignedIn>
-                  <UserButton appearance={{ elements: { userButtonAvatarBox: "w-9 h-9" } }} />
+                  <UserButton appearance={{ elements: { userButtonAvatarBox: "w-8 h-8" } }} />
                 </SignedIn>
-              </div>
+              </nav>
             </div>
           </header>
 
           {children}
 
-          <footer className="border-t border-white/5 py-8 text-center text-sm text-neutral-600">
+          <footer className="border-t border-line py-10 text-center text-[13px] text-muted">
             נבנה על ידי נתנאל פרח ·{" "}
-            <a href="https://github.com/farahnethaniel-hub" className="hover:text-neutral-300" target="_blank" rel="noreferrer">
+            <a href="https://github.com/farahnethaniel-hub" className="transition-colors hover:text-ink" target="_blank" rel="noreferrer">
               GitHub
             </a>
           </footer>

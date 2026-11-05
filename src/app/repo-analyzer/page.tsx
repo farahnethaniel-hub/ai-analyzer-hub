@@ -45,14 +45,14 @@ export default function RepoAnalyzer() {
         />
       ) : (
         <form
-          className="flex flex-col gap-6"
+          className="glass flex flex-col gap-6 rounded-[28px] p-6 sm:p-8"
           onSubmit={(e) => {
             e.preventDefault();
             analyze();
           }}
         >
           <div>
-            <label htmlFor="repo" className="mb-2 block text-sm font-bold text-neutral-400">
+            <label htmlFor="repo" className="mb-2 block text-[14px] font-semibold text-muted">
               קישור לריפו
             </label>
             <input
@@ -62,9 +62,9 @@ export default function RepoAnalyzer() {
               value={repoUrl}
               onChange={(e) => setRepoUrl(e.target.value)}
               placeholder="https://github.com/user/repo"
-              className="w-full rounded-2xl border border-white/10 bg-white/[0.03] p-5 text-lg text-white placeholder:text-neutral-600 focus:border-blue-500/60 focus:outline-none"
+              className="field"
             />
-            <p className="mt-2 text-sm text-neutral-500">ריפו ציבורי בלבד. הניתוח לוקח בדרך כלל 20–40 שניות.</p>
+            <p className="mt-2 text-sm text-muted">ריפו ציבורי בלבד. הניתוח לוקח בדרך כלל 20–40 שניות.</p>
           </div>
 
           <ErrorNote message={error} />

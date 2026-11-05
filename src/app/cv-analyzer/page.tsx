@@ -78,9 +78,9 @@ export default function CVAnalyzer() {
       {result ? (
         <Report title="התאמה למשרה" report={result.report} score={result.score} onReset={reset} resetLabel="ניתוח קובץ חדש" />
       ) : (
-        <div className="flex flex-col gap-6">
+        <div className="glass flex flex-col gap-6 rounded-[28px] p-6 sm:p-8">
           <div>
-            <label htmlFor="job" className="mb-2 block text-sm font-bold text-neutral-400">
+            <label htmlFor="job" className="mb-2 block text-[14px] font-semibold text-muted">
               תיאור המשרה
             </label>
             <textarea
@@ -88,25 +88,25 @@ export default function CVAnalyzer() {
               value={jobDescription}
               onChange={(e) => setJobDescription(e.target.value)}
               placeholder="הדביקו כאן את דרישות המשרה..."
-              className="h-44 w-full resize-none rounded-2xl border border-white/10 bg-white/[0.03] p-5 text-lg leading-relaxed text-white placeholder:text-neutral-600 focus:border-blue-500/60 focus:outline-none"
+              className="field h-44 resize-none leading-relaxed"
             />
           </div>
 
           <label
             htmlFor="cv"
-            className="group flex cursor-pointer flex-col items-center gap-3 rounded-2xl border border-dashed border-white/15 bg-white/[0.02] p-10 text-center transition hover:border-blue-500/50"
+            className="group flex cursor-pointer flex-col items-center gap-3 rounded-2xl border border-dashed border-[#d2d2d7] bg-surface p-10 text-center transition hover:border-accent"
           >
             {file ? (
               <>
-                <CheckCircle2 className="text-green-400" size={36} />
-                <span className="font-bold text-neutral-200">{file.name}</span>
-                <span className="text-sm text-neutral-500">לחצו כדי להחליף קובץ</span>
+                <CheckCircle2 className="text-[#30d158]" size={36} />
+                <span className="font-bold text-ink">{file.name}</span>
+                <span className="text-sm text-muted">לחצו כדי להחליף קובץ</span>
               </>
             ) : (
               <>
-                <Upload className="text-neutral-400 transition group-hover:text-blue-400" size={36} />
-                <span className="font-bold text-neutral-300">העלאת קורות חיים</span>
-                <span className="text-sm text-neutral-500">PDF בלבד, עד {MAX_FILE_MB}MB</span>
+                <Upload className="text-muted transition group-hover:text-accent" size={36} />
+                <span className="font-bold text-ink">העלאת קורות חיים</span>
+                <span className="text-sm text-muted">PDF בלבד, עד {MAX_FILE_MB}MB</span>
               </>
             )}
             <input
