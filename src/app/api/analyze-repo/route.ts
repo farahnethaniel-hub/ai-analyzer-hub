@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { Octokit } from "octokit";
 import { auth } from "@clerk/nextjs/server";
-import { ApiError, REPORT_FORMAT, errorResponse, extractScore, getModel, stripScore } from "@/lib/ai";
+import { ApiError, REPORT_FORMAT, errorResponse, extractScore, generate, stripScore } from "@/lib/ai";
 
 const CODE_FILE = /\.(ts|tsx|js|jsx|py|java|cs|go|rs|c|cpp|h|hpp)$/i;
 const SKIP_PATH = /(node_modules|dist\/|build\/|\.min\.|\.config\.|test|spec|vcxproj|vendor\/)/i;
@@ -88,8 +88,7 @@ ${structure}
 קבצים מרכזיים:
 ${code || "(לא נמצאו קבצי קוד לקריאה)"}`;
 
-    const result = await getModel().generateContent(prompt);
-    const text = result.response.text();
+    const text = await generate(prompt);
 
     return NextResponse.json({ report: stripScore(text), score: extractScore(text) });
   } catch (error) {

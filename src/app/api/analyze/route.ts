@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
-import { ApiError, REPORT_FORMAT, errorResponse, extractScore, getModel, stripScore } from "@/lib/ai";
+import { ApiError, REPORT_FORMAT, errorResponse, extractScore, generate, stripScore } from "@/lib/ai";
 
 const MAX_CV_CHARS = 20000;
 const MAX_JOB_CHARS = 8000;
@@ -39,8 +39,7 @@ ${REPORT_FORMAT}
 קורות החיים:
 """${cvText.slice(0, MAX_CV_CHARS)}"""`;
 
-    const result = await getModel().generateContent(prompt);
-    const text = result.response.text();
+    const text = await generate(prompt);
 
     return NextResponse.json({ report: stripScore(text), score: extractScore(text) });
   } catch (error) {
