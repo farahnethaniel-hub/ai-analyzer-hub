@@ -22,10 +22,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <ClerkProvider>
       <html lang="he" dir="rtl">
         <body className={`${heebo.variable} min-h-screen bg-bg text-ink`}>
-          <header className="sticky top-0 z-50 border-b border-line bg-[rgba(245,245,247,0.72)] backdrop-blur-xl backdrop-saturate-150">
+          <header className="sticky top-0 z-50 border-b border-line bg-[rgba(0,0,0,0.72)] backdrop-blur-xl backdrop-saturate-150">
             <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-5">
               <Link href="/" className="flex items-center gap-2.5 text-[15px] font-semibold tracking-tight">
-                <span className="grid h-7 w-7 place-items-center rounded-full bg-ink text-[10px] font-medium text-white" dir="ltr">
+                <span className="grid h-7 w-7 place-items-center rounded-full bg-ink text-[10px] font-semibold text-black" dir="ltr">
                   NF
                 </span>
                 <span dir="ltr">AI Analyzer Hub</span>
@@ -42,7 +42,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
                 </Link>
                 <SignedOut>
                   <SignInButton mode="modal">
-                    <button className="cursor-pointer rounded-full bg-ink px-4 py-1.5 text-[13px] font-medium text-white transition hover:opacity-85">
+                    <button className="cursor-pointer rounded-full bg-ink px-4 py-1.5 text-[13px] font-medium text-black transition hover:opacity-85">
                       התחברות
                     </button>
                   </SignInButton>

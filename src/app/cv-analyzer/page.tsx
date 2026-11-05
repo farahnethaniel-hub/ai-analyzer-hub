@@ -94,7 +94,7 @@ export default function CVAnalyzer() {
 
           <label
             htmlFor="cv"
-            className="group flex cursor-pointer flex-col items-center gap-3 rounded-2xl border border-dashed border-[#d2d2d7] bg-surface p-10 text-center transition hover:border-accent"
+            className="group flex cursor-pointer flex-col items-center gap-3 rounded-2xl border border-dashed border-[#3a3a3c] bg-surface-2 p-10 text-center transition hover:border-accent"
           >
             {file ? (
               <>

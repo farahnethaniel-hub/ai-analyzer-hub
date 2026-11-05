@@ -29,8 +29,8 @@ export default function Report({
 
   return (
     <motion.section
-      initial={{ opacity: 0, y: 20, scale: 0.98 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
       className="glass rounded-[28px] p-7 sm:p-10"
     >
@@ -42,7 +42,7 @@ export default function Report({
         {score !== null && (
           <div className="relative h-[84px] w-[84px] shrink-0" aria-label={`ציון ${score} מתוך 100`}>
             <svg viewBox="0 0 84 84" className="h-full w-full -rotate-90">
-              <circle cx="42" cy="42" r={R} fill="none" stroke="#e8e8ed" strokeWidth="7" />
+              <circle cx="42" cy="42" r={R} fill="none" stroke="#2c2c2e" strokeWidth="7" />
               <motion.circle
                 cx="42"
                 cy="42"
@@ -70,7 +70,7 @@ export default function Report({
 
       <button
         onClick={onReset}
-        className="mt-10 cursor-pointer rounded-full bg-bg px-6 py-2.5 text-[15px] font-medium text-ink transition hover:bg-[#e8e8ed]"
+        className="mt-10 cursor-pointer rounded-full bg-surface-2 px-6 py-2.5 text-[15px] font-medium text-ink transition hover:bg-[#2c2c2e]"
       >
         {resetLabel}
       </button>

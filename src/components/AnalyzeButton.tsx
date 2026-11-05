@@ -30,7 +30,7 @@ export default function AnalyzeButton({
 export function ErrorNote({ message }: { message: string | null }) {
   if (!message) return null;
   return (
-    <p role="alert" className="rounded-2xl border border-[#ff453a]/25 bg-[#ff453a]/[0.06] px-5 py-3.5 text-[15px] text-[#c4271d]">
+    <p role="alert" className="rounded-2xl border border-[#ff453a]/30 bg-[#ff453a]/10 px-5 py-3.5 text-[15px] text-[#ff6961]">
       {message}
     </p>
   );

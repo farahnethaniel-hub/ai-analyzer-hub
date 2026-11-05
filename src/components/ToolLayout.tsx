@@ -32,7 +32,7 @@ export default function ToolLayout({
       </Link>
 
       <div className="mt-10 mb-12 flex flex-col items-center text-center">
-        <div className="mb-6 grid h-16 w-16 place-items-center rounded-[20px] bg-surface text-ink shadow-[0_8px_30px_-10px_rgba(0,0,0,0.2)]">{icon}</div>
+        <div className="mb-6 grid h-16 w-16 place-items-center rounded-[20px] border border-line bg-surface text-ink">{icon}</div>
         <h1 className="text-[40px] font-bold tracking-[-0.03em] sm:text-[56px]" dir="ltr">
           {title}
         </h1>
@@ -43,7 +43,7 @@ export default function ToolLayout({
 
       <SignedOut>
         <div className="glass mx-auto flex max-w-md flex-col items-center rounded-[28px] p-10 text-center">
-          <div className="mb-5 grid h-14 w-14 place-items-center rounded-full bg-bg">
+          <div className="mb-5 grid h-14 w-14 place-items-center rounded-full bg-surface-2">
             <Lock size={24} strokeWidth={1.6} />
           </div>
           <h2 className="mb-2 text-[22px] font-semibold">צריך להתחבר</h2>
