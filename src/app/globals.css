@@ -352,6 +352,15 @@ body > main {
   font-variant-numeric: tabular-nums slashed-zero;
   color: var(--color-cool);
 }
+/* The primary action follows the chosen tool; its width eases instead of jumping */
+.hero__try {
+  min-width: 17.5rem;
+}
+.hero__try-label {
+  display: inline-block;
+  animation: settle var(--dur-short) var(--ease-out);
+}
+
 /* The tour: a line fills under the chosen tool, then the next one opens */
 .record__progress {
   position: absolute;

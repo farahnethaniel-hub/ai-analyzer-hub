@@ -1,5 +1,6 @@
 "use client";
-import { useEffect, useRef, useState, type CSSProperties, type KeyboardEvent } from "react";
+import { createContext, useContext, useEffect, useRef, useState, type CSSProperties, type KeyboardEvent, type ReactNode } from "react";
+import Link from "next/link";
 import { Pause, Play } from "lucide-react";
 
 /** What each tool takes and the report sections it writes, read from the API prompts. */
@@ -7,6 +8,7 @@ const records = [
   {
     id: "cv",
     name: "CV Analyzer",
+    href: "/cv-analyzer",
     short: "קורות חיים",
     inputs: ["קובץ PDF של קורות החיים", "תיאור המשרה"],
     sections: ["סיכום", "חוזקות", "פערים מול המשרה", "המלצות לשיפור קורות החיים"],
@@ -14,6 +16,7 @@ const records = [
   {
     id: "repo",
     name: "Repo Analyzer",
+    href: "/repo-analyzer",
     short: "GitHub",
     inputs: ["קישור לריפו ציבורי ב-GitHub"],
     sections: ["סיכום", "ארכיטקטורה ומבנה", "איכות קוד", "סיכונים ובאגים אפשריים", "המלצות לשיפור"],
@@ -21,14 +24,39 @@ const records = [
   {
     id: "instagram",
     name: "Instagram Analyzer",
+    href: "/instagram-analyzer",
     short: "אינסטגרם",
     inputs: ["שם משתמש", "תחום העסק", "הביו הנוכחי", "תיאור התוכן"],
     sections: ["רושם ראשוני", "ביו ומיצוב", "אסטרטגיית תוכן", "חוזקות", "נקודות לשיפור", "ביו מוצע"],
   },
 ];
 
-export default function ToolRecord() {
+/** The hero's chosen tool, shared by the record and the primary action beside the headline. */
+const ActiveTool = createContext<{ active: number; setActive: (next: number | ((a: number) => number)) => void }>({
+  active: 0,
+  setActive: () => {},
+});
+
+export function HeroToolProvider({ children }: { children: ReactNode }) {
   const [active, setActive] = useState(0);
+  return <ActiveTool.Provider value={{ active, setActive }}>{children}</ActiveTool.Provider>;
+}
+
+/** The primary action: opens whichever tool the record is showing. */
+export function HeroToolAction() {
+  const { active } = useContext(ActiveTool);
+  const r = records[active];
+  return (
+    <Link href={r.href} className="btn btn--primary hero__try">
+      <span key={r.id} className="hero__try-label">
+        נסו את <span className="ltr">{r.name}</span>
+      </span>
+    </Link>
+  );
+}
+
+export default function ToolRecord() {
+  const { active, setActive } = useContext(ActiveTool);
   // The tour moves to the next tool when the line under the tab fills.
   // It stops for good once the visitor picks a tool, and holds while the pointer or focus is inside.
   const [touring, setTouring] = useState(false);
