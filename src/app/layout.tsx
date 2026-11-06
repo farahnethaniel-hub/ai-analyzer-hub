@@ -1,12 +1,21 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ClerkProvider, SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
-import { Heebo } from "next/font/google";
+import { Atkinson_Hyperlegible_Mono, IBM_Plex_Sans_Hebrew } from "next/font/google";
 import "./globals.css";
 
-const heebo = Heebo({
-  variable: "--font-heebo",
+const plex = IBM_Plex_Sans_Hebrew({
+  variable: "--font-plex",
   subsets: ["hebrew", "latin"],
+  weight: ["400", "500"],
+  display: "swap",
+});
+
+const atkinsonMono = Atkinson_Hyperlegible_Mono({
+  variable: "--font-atkinson-mono",
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -20,29 +29,29 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <ClerkProvider>
-      <html lang="he" dir="rtl">
-        <body className={`${heebo.variable} min-h-screen bg-bg text-ink`}>
-          <header className="sticky top-0 z-50 border-b border-line bg-[rgba(0,0,0,0.72)] backdrop-blur-xl backdrop-saturate-150">
-            <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-5">
-              <Link href="/" className="flex items-center gap-2.5 text-[15px] font-semibold tracking-tight">
-                <span className="grid h-7 w-7 place-items-center rounded-full bg-ink text-[10px] font-semibold text-black" dir="ltr">
+      <html lang="he" dir="rtl" className={`${plex.variable} ${atkinsonMono.variable}`}>
+        <body>
+          <header className="site-nav">
+            <div className="container site-nav__inner">
+              <Link href="/" className="wordmark">
+                <span className="wordmark__mark ltr" aria-hidden="true">
                   NF
                 </span>
-                <span dir="ltr">AI Analyzer Hub</span>
+                <span className="ltr">AI Analyzer Hub</span>
               </Link>
-              <nav className="flex items-center gap-6 text-[14px] text-muted">
-                <Link href="/cv-analyzer" className="hidden transition-colors hover:text-ink sm:inline">
+              <nav className="nav-links" aria-label="כלים">
+                <Link href="/cv-analyzer" className="nav-link">
                   קורות חיים
                 </Link>
-                <Link href="/repo-analyzer" className="hidden transition-colors hover:text-ink sm:inline">
+                <Link href="/repo-analyzer" className="nav-link">
                   GitHub
                 </Link>
-                <Link href="/instagram-analyzer" className="hidden transition-colors hover:text-ink sm:inline">
+                <Link href="/instagram-analyzer" className="nav-link">
                   אינסטגרם
                 </Link>
                 <SignedOut>
                   <SignInButton mode="modal">
-                    <button className="cursor-pointer rounded-full bg-ink px-4 py-1.5 text-[13px] font-medium text-black transition hover:opacity-85">
+                    <button type="button" className="btn btn--sm">
                       התחברות
                     </button>
                   </SignInButton>
@@ -56,11 +65,19 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
 
           {children}
 
-          <footer className="border-t border-line py-10 text-center text-[13px] text-muted">
-            נבנה על ידי נתנאל פרח ·{" "}
-            <a href="https://github.com/farahnethaniel-hub" className="transition-colors hover:text-ink" target="_blank" rel="noreferrer">
-              GitHub
-            </a>
+          <footer className="site-footer">
+            <div className="container">
+              <p className="site-footer__name">AI Analyzer Hub</p>
+              <div className="site-footer__meta">
+                <p>
+                  נבנה על ידי נתנאל פרח ·{" "}
+                  <a href="https://github.com/farahnethaniel-hub" className="text-link" target="_blank" rel="noreferrer">
+                    GitHub
+                  </a>
+                </p>
+                <p>מופעל על ידי Google Gemini</p>
+              </div>
+            </div>
           </footer>
         </body>
       </html>

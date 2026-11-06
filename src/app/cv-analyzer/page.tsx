@@ -72,15 +72,15 @@ export default function CVAnalyzer() {
     <ToolLayout
       title="CV Analyzer"
       subtitle="השוואה בין קורות החיים לדרישות המשרה, עם ציון התאמה והמלצות"
-      icon={<FileText size={30} />}
+      icon={<FileText size={30} strokeWidth={1.6} />}
       lockedText="כדי לנתח קורות חיים ולהשוות אותם למשרות, התחברו לחשבון."
     >
       {result ? (
         <Report title="התאמה למשרה" report={result.report} score={result.score} onReset={reset} resetLabel="ניתוח קובץ חדש" />
       ) : (
-        <div className="glass flex flex-col gap-6 rounded-[28px] p-6 sm:p-8">
+        <div className="panel">
           <div>
-            <label htmlFor="job" className="mb-2 block text-[14px] font-semibold text-muted">
+            <label htmlFor="job" className="label">
               תיאור המשרה
             </label>
             <textarea
@@ -88,25 +88,26 @@ export default function CVAnalyzer() {
               value={jobDescription}
               onChange={(e) => setJobDescription(e.target.value)}
               placeholder="הדביקו כאן את דרישות המשרה..."
-              className="field h-44 resize-none leading-relaxed"
+              className="field field--area"
+              rows={7}
             />
           </div>
 
           <label
             htmlFor="cv"
-            className="group flex cursor-pointer flex-col items-center gap-3 rounded-2xl border border-dashed border-[#3a3a3c] bg-surface-2 p-10 text-center transition hover:border-accent"
+            className={file ? "dropzone dropzone--done" : "dropzone"}
           >
             {file ? (
               <>
-                <CheckCircle2 className="text-[#30d158]" size={36} />
-                <span className="font-bold text-ink">{file.name}</span>
-                <span className="text-sm text-muted">לחצו כדי להחליף קובץ</span>
+                <CheckCircle2 size={32} strokeWidth={1.6} aria-hidden="true" />
+                <span className="dropzone__name ltr">{file.name}</span>
+                <span className="dropzone__note">לחצו כדי להחליף קובץ</span>
               </>
             ) : (
               <>
-                <Upload className="text-muted transition group-hover:text-accent" size={36} />
-                <span className="font-bold text-ink">העלאת קורות חיים</span>
-                <span className="text-sm text-muted">PDF בלבד, עד {MAX_FILE_MB}MB</span>
+                <Upload size={32} strokeWidth={1.6} aria-hidden="true" />
+                <span className="dropzone__name">העלאת קורות חיים</span>
+                <span className="dropzone__note">PDF בלבד, עד {MAX_FILE_MB}MB</span>
               </>
             )}
             <input
@@ -120,7 +121,7 @@ export default function CVAnalyzer() {
 
           <ErrorNote message={error} />
 
-          <div className="flex justify-center">
+          <div className="panel__actions">
             <AnalyzeButton
               loading={loading}
               disabled={!file || !jobDescription.trim()}

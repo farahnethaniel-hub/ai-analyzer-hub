@@ -6,8 +6,7 @@ import Report from "@/components/Report";
 import AnalyzeButton, { ErrorNote } from "@/components/AnalyzeButton";
 import { requestReport, type ReportResult } from "@/lib/request";
 
-const field =
-  "field";
+const field = "field";
 
 export default function InstagramAnalyzer() {
   const [username, setUsername] = useState("");
@@ -37,7 +36,7 @@ export default function InstagramAnalyzer() {
     <ToolLayout
       title="Instagram Analyzer"
       subtitle="ניתוח מיתוג ותוכן לחשבון עסקי, עם המלצות וביו משופר"
-      icon={<Instagram size={30} />}
+      icon={<Instagram size={30} strokeWidth={1.6} />}
       lockedText="כדי לנתח חשבון אינסטגרם עסקי, התחברו לחשבון."
     >
       {result ? (
@@ -50,21 +49,21 @@ export default function InstagramAnalyzer() {
         />
       ) : (
         <form
-          className="glass flex flex-col gap-5 rounded-[28px] p-6 sm:p-8"
+          className="panel"
           onSubmit={(e) => {
             e.preventDefault();
             analyze();
           }}
         >
-          <div className="grid gap-5 sm:grid-cols-2">
+          <div className="panel__grid">
             <div>
-              <label htmlFor="ig-user" className="mb-2 block text-[14px] font-semibold text-muted">
+              <label htmlFor="ig-user" className="label">
                 שם משתמש
               </label>
               <input id="ig-user" dir="ltr" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="@yourbusiness" className={field} />
             </div>
             <div>
-              <label htmlFor="ig-niche" className="mb-2 block text-[14px] font-semibold text-muted">
+              <label htmlFor="ig-niche" className="label">
                 תחום העסק
               </label>
               <input id="ig-niche" value={niche} onChange={(e) => setNiche(e.target.value)} placeholder="למשל: סטודיו לפילאטיס בתל אביב" className={field} />
@@ -72,14 +71,14 @@ export default function InstagramAnalyzer() {
           </div>
 
           <div>
-            <label htmlFor="ig-bio" className="mb-2 block text-[14px] font-semibold text-muted">
+            <label htmlFor="ig-bio" className="label">
               הביו הנוכחי
             </label>
-            <textarea id="ig-bio" value={bio} onChange={(e) => setBio(e.target.value)} placeholder="העתיקו את הביו מהפרופיל" className={`${field} h-28 resize-none`} />
+            <textarea id="ig-bio" value={bio} onChange={(e) => setBio(e.target.value)} placeholder="העתיקו את הביו מהפרופיל" className={`${field} field--area`} rows={4} />
           </div>
 
           <div>
-            <label htmlFor="ig-content" className="mb-2 block text-[14px] font-semibold text-muted">
+            <label htmlFor="ig-content" className="label">
               על מה הפוסטים והרילס?
             </label>
             <textarea
@@ -87,14 +86,15 @@ export default function InstagramAnalyzer() {
               value={content}
               onChange={(e) => setContent(e.target.value)}
               placeholder="תארו בקצרה את התוכן: סוגי פוסטים, נושאים, כמה פעמים בשבוע מפרסמים, מה עובד ומה פחות"
-              className={`${field} h-36 resize-none`}
+              className={`${field} field--area`}
+              rows={5}
             />
-            <p className="mt-2 text-sm text-muted">ה-AI לא נכנס לאינסטגרם, ולכן הניתוח מבוסס רק על מה שתכתבו כאן.</p>
+            <p className="hint">ה-AI לא נכנס לאינסטגרם, ולכן הניתוח מבוסס רק על מה שתכתבו כאן.</p>
           </div>
 
           <ErrorNote message={error} />
 
-          <div className="flex justify-center">
+          <div className="panel__actions">
             <AnalyzeButton loading={loading} disabled={!ready} onClick={analyze} label="נתחו את החשבון" loadingLabel="מנתח את החשבון..." />
           </div>
         </form>

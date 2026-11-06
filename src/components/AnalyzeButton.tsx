@@ -19,9 +19,10 @@ export default function AnalyzeButton({
       type="button"
       onClick={onClick}
       disabled={disabled || loading}
-      className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-accent px-10 py-3.5 text-[17px] font-medium text-white transition hover:bg-accent-hover active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-35 sm:w-auto"
+      aria-busy={loading}
+      className="btn btn--primary btn--wide"
     >
-      {loading && <Loader2 className="animate-spin" size={18} />}
+      {loading && <Loader2 className="spin keep-motion" size={18} aria-hidden="true" />}
       {loading ? loadingLabel : label}
     </button>
   );
@@ -30,7 +31,7 @@ export default function AnalyzeButton({
 export function ErrorNote({ message }: { message: string | null }) {
   if (!message) return null;
   return (
-    <p role="alert" className="rounded-2xl border border-[#ff453a]/30 bg-[#ff453a]/10 px-5 py-3.5 text-[15px] text-[#ff6961]">
+    <p role="alert" className="error-note">
       {message}
     </p>
   );

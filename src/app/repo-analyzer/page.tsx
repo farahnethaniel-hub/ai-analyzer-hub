@@ -29,7 +29,7 @@ export default function RepoAnalyzer() {
     <ToolLayout
       title="Repo Analyzer"
       subtitle="Code Review אוטומטי לריפו ציבורי ב-GitHub: ארכיטקטורה, איכות קוד וסיכונים"
-      icon={<Github size={30} />}
+      icon={<Github size={30} strokeWidth={1.6} />}
       lockedText="כדי לנתח ריפוזיטורים ולקבל Code Review, התחברו לחשבון."
     >
       {result ? (
@@ -45,14 +45,14 @@ export default function RepoAnalyzer() {
         />
       ) : (
         <form
-          className="glass flex flex-col gap-6 rounded-[28px] p-6 sm:p-8"
+          className="panel"
           onSubmit={(e) => {
             e.preventDefault();
             analyze();
           }}
         >
           <div>
-            <label htmlFor="repo" className="mb-2 block text-[14px] font-semibold text-muted">
+            <label htmlFor="repo" className="label">
               קישור לריפו
             </label>
             <input
@@ -64,12 +64,12 @@ export default function RepoAnalyzer() {
               placeholder="https://github.com/user/repo"
               className="field"
             />
-            <p className="mt-2 text-sm text-muted">ריפו ציבורי בלבד. הניתוח לוקח בדרך כלל 20–40 שניות.</p>
+            <p className="hint">ריפו ציבורי בלבד. הניתוח לוקח בדרך כלל 20 עד 40 שניות.</p>
           </div>
 
           <ErrorNote message={error} />
 
-          <div className="flex justify-center">
+          <div className="panel__actions">
             <AnalyzeButton
               loading={loading}
               disabled={!repoUrl.trim()}
