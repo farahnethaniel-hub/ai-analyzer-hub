@@ -1,5 +1,5 @@
 /* Hallmark · shape: hub, kept order (hero, the tools, how it works) · genre: modern-minimal · theme: Console (deal 3/3, seed tools-score-against-job-e352·881571f8·2026-11-06·r0) · redesign: full
- * hero: Stage · nav: edge-aligned bar, the wordmark, three tool links and the sign-in · footer: colophon, the wordmark over the byline · imagery: the product built (each tool's real input and report sections) · signature: a switcher showing what each tool takes and the exact report it writes · console: graphite
+ * hero: Stage, text and the record on six columns each · nav: edge-aligned bar, the wordmark, three tool links and the sign-in · footer: colophon, the wordmark over the byline · imagery: the product built (each tool's real input and report sections) · signature: a switcher showing what each tool takes and the exact report it writes · console: graphite
  * axes: dark/grotesk-sans/chromatic-amber · posture: restrained · contrast: pass · fold: pass · v2.0.0 */
 /* Hallmark · pre-emit critique: P4 H4 E4 S4 R5 V4 · weakest: S, the headline is the owner's own general line, so the hero panel carries the specifics: each tool's real fields and report sections */
 /* Hallmark · dropped "מופעל על ידי Google Gemini" from above the headline · 54 names the eyebrow; the fact moved to the footer and stays in the second step */
@@ -208,7 +208,7 @@ body > main {
 }
 @media (min-width: 60rem) {
   .hero__grid {
-    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    grid-template-columns: minmax(0, 6fr) minmax(0, 6fr);
     gap: var(--space-3xl);
   }
 }
@@ -248,6 +248,20 @@ body > main {
   border: 0;
   cursor: pointer;
   transition: background-color var(--dur-short) var(--ease-out), color var(--dur-short) var(--ease-out);
+}
+.record__tab-short {
+  display: inline;
+}
+.record__tab-full {
+  display: none;
+}
+@media (min-width: 40rem) {
+  .record__tab-short {
+    display: none;
+  }
+  .record__tab-full {
+    display: inline;
+  }
 }
 .record__tab:hover {
   color: var(--color-ink);

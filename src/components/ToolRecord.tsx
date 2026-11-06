@@ -6,18 +6,21 @@ const records = [
   {
     id: "cv",
     name: "CV Analyzer",
+    short: "קורות חיים",
     inputs: ["קובץ PDF של קורות החיים", "תיאור המשרה"],
     sections: ["סיכום", "חוזקות", "פערים מול המשרה", "המלצות לשיפור קורות החיים"],
   },
   {
     id: "repo",
     name: "Repo Analyzer",
+    short: "GitHub",
     inputs: ["קישור לריפו ציבורי ב-GitHub"],
     sections: ["סיכום", "ארכיטקטורה ומבנה", "איכות קוד", "סיכונים ובאגים אפשריים", "המלצות לשיפור"],
   },
   {
     id: "instagram",
     name: "Instagram Analyzer",
+    short: "אינסטגרם",
     inputs: ["שם משתמש", "תחום העסק", "הביו הנוכחי", "תיאור התוכן"],
     sections: ["רושם ראשוני", "ביו ומיצוב", "אסטרטגיית תוכן", "חוזקות", "נקודות לשיפור", "ביו מוצע"],
   },
@@ -54,10 +57,11 @@ export default function ToolRecord() {
             aria-selected={i === active}
             aria-controls={`panel-${rec.id}`}
             tabIndex={i === active ? 0 : -1}
-            className="record__tab ltr"
+            className="record__tab"
             onClick={() => setActive(i)}
           >
-            {rec.name}
+            <span className="record__tab-full ltr">{rec.name}</span>
+            <span className="record__tab-short">{rec.short}</span>
           </button>
         ))}
       </div>
