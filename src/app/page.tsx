@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import Link from "next/link";
 import { FileText, Github, Instagram, ScanSearch, Sparkles, Upload } from "lucide-react";
 import ToolRecord from "@/components/ToolRecord";
@@ -37,16 +38,16 @@ export default function Home() {
     <main>
       <section className="hero">
         <div className="container hero__grid">
-          <div>
-            <h1>
+          <div className="hero__enter">
+            <h1 className="hero__title" style={{ "--i": 0 } as CSSProperties}>
               ניתוח מקצועי.
               <br />
               בלי ניחושים.
             </h1>
-            <p className="lead hero__lead">
+            <p className="lead hero__lead" style={{ "--i": 1 } as CSSProperties}>
               שלושה כלי AI במקום אחד: קורות חיים מול משרה, Code Review לפרויקטים, וניתוח חשבון אינסטגרם עסקי.
             </p>
-            <div className="hero__actions">
+            <div className="hero__actions" style={{ "--i": 2 } as CSSProperties}>
               <Link href="/cv-analyzer" className="btn btn--primary">
                 נסו את CV Analyzer
               </Link>
@@ -55,7 +56,11 @@ export default function Home() {
               </Link>
             </div>
           </div>
-          <ToolRecord />
+          <div className="hero__enter">
+            <div style={{ "--i": 3 } as CSSProperties}>
+              <ToolRecord />
+            </div>
+          </div>
         </div>
       </section>
 

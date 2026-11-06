@@ -4,6 +4,8 @@
 /* Hallmark · pre-emit critique: P4 H4 E4 S4 R5 V4 · weakest: S, the headline is the owner's own general line, so the hero panel carries the specifics: each tool's real fields and report sections */
 /* Hallmark · dropped "מופעל על ידי Google Gemini" from above the headline · 54 names the eyebrow; the fact moved to the footer and stays in the second step */
 /* Hallmark · dismissed 3 · the three steps carry a numeral, a title and a line; the icons sit inline beside the titles, not in tiles */
+/* Hallmark · waive 2b · a neutral ramp from ink to muted on hue 250, every stop a token, with a glint passing over the whole headline · the owner asked for the headline's sheen back */
+/* Hallmark · motion by request: the hero settles once, the headline sheen passes every 9s, the record tours the three tools with a progress line, pause on hover, focus and a visible button; all still under reduced motion */
 /* Hallmark · display face: IBM Plex Sans Hebrew stands in for Host Grotesk, which has no Hebrew; Atkinson Hyperlegible Mono stays for what the tool writes */
 @import "tailwindcss";
 @import "./tokens.css";
@@ -234,12 +236,14 @@ body > main {
 }
 .record__tabs {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
   gap: var(--rule-hair);
   background: var(--color-rule);
   border-block-end: var(--rule-hair) solid var(--color-rule);
 }
 .record__tab {
+  position: relative;
+  white-space: nowrap;
   min-height: 48px;
   padding: 0 var(--space-sm);
   background: var(--color-paper-2);
@@ -255,7 +259,7 @@ body > main {
 .record__tab-full {
   display: none;
 }
-@media (min-width: 40rem) {
+@media (min-width: 80rem) {
   .record__tab-short {
     display: none;
   }
@@ -348,6 +352,93 @@ body > main {
   font-variant-numeric: tabular-nums slashed-zero;
   color: var(--color-cool);
 }
+/* The tour: a line fills under the chosen tool, then the next one opens */
+.record__progress {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 2px;
+  background: var(--color-cool);
+  transform-origin: right center;
+  animation: tour 5s linear forwards;
+}
+.record__progress[data-paused="true"] {
+  animation-play-state: paused;
+}
+@keyframes tour {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+.record__pause {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  min-height: 48px;
+  border: 0;
+  background: var(--color-paper-2);
+  color: var(--color-muted);
+  cursor: pointer;
+  transition: color var(--dur-short) var(--ease-out);
+}
+.record__pause:hover {
+  color: var(--color-ink);
+}
+.record__pause:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: -2px;
+}
+.record__sections li,
+.record__inputs li {
+  animation: settle var(--dur-long) var(--ease-out) backwards;
+  animation-delay: calc(var(--i, 0) * 45ms);
+}
+
+/* Hero: one settle on arrival, and a slow light across the headline */
+.hero__enter > * {
+  animation: rise 700ms var(--ease-out) backwards;
+  animation-delay: calc(var(--i, 0) * 80ms);
+}
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+.hero__title {
+  /* a light band passing over a top-lit ramp, like light on a glass edge */
+  background-image:
+    linear-gradient(105deg, transparent 40%, var(--color-glint) 50%, transparent 60%),
+    linear-gradient(180deg, var(--color-ink) 0%, var(--color-ink-2) 55%, var(--color-muted) 100%);
+  background-size: 300% 100%, 100% 100%;
+  background-position: 0% 0, 0 0;
+  background-repeat: no-repeat;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: rise 700ms var(--ease-out) backwards, sheen 9s var(--ease-in-out) 1.2s infinite;
+}
+@keyframes sheen {
+  0% {
+    background-position: 0% 0, 0 0;
+  }
+  35%,
+  100% {
+    background-position: 100% 0, 0 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero__title {
+    animation: none;
+  }
+  .record__progress {
+    display: none;
+  }
+}
+
 @keyframes settle {
   from {
     opacity: 0;
