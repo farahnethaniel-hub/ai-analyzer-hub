@@ -26,6 +26,7 @@ jobs:
       RUN_LIVE_AI: ${{ github.event.inputs.run_live_ai == 'true' && '1' || '0' }}
       CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
       CLERK_TEST_USER_ID: ${{ secrets.CLERK_TEST_USER_ID }}
+      VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

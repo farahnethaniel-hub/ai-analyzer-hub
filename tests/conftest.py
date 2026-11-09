@@ -9,6 +9,9 @@ BASE_URL            Deployment to test. Defaults to the production site.
 CLERK_SECRET_KEY    Clerk backend key. Needed only for the authenticated tests.
 CLERK_TEST_USER_ID  A dedicated Clerk test user (user_...). Needed with the key.
 RUN_LIVE_AI         Set to "1" to run the tests that call Gemini (uses quota).
+VERCEL_AUTOMATION_BYPASS_SECRET
+                    Lets the suite reach preview deployments that sit behind Vercel
+                    Authentication (Project Settings > Deployment Protection).
 """
 
 from __future__ import annotations
@@ -43,11 +46,32 @@ def base_url() -> str:
     return os.getenv("BASE_URL", DEFAULT_BASE_URL).rstrip("/")
 
 
+def deployment_headers() -> dict[str, str]:
+    """Headers every request needs to reach the deployment itself (not the app's own auth)."""
+    headers = {"User-Agent": "ai-analyzer-hub-api-tests"}
+    bypass = os.getenv("VERCEL_AUTOMATION_BYPASS_SECRET")
+    if bypass:
+        headers["x-vercel-protection-bypass"] = bypass
+    return headers
+
+
+@pytest.fixture(scope="session", autouse=True)
+def deployment_is_reachable(base_url: str) -> None:
+    """Fail fast with one clear message when Vercel's login wall answers instead of the app."""
+    response = requests.get(base_url, headers=deployment_headers(), timeout=TIMEOUT)
+    if response.status_code == 401 and "vercel" in response.text.lower():
+        pytest.exit(
+            f"{base_url} is behind Vercel Authentication. "
+            "Set VERCEL_AUTOMATION_BYPASS_SECRET or test the production URL.",
+            returncode=2,
+        )
+
+
 @pytest.fixture(scope="session")
 def http() -> Iterator[requests.Session]:
-    """An anonymous client: no cookies, no auth header."""
+    """An anonymous client: no cookies, no app auth header."""
     with requests.Session() as session:
-        session.headers["User-Agent"] = "ai-analyzer-hub-api-tests"
+        session.headers.update(deployment_headers())
         yield session
 
 
@@ -92,7 +116,7 @@ def api(base_url: str, clerk_session: ClerkTestSession):
     """Calls an API route as the signed-in test user. Usage: api("/api/analyze", {...})."""
 
     def call(path: str, payload: object | None = None, *, raw_body: str | None = None) -> requests.Response:
-        headers = {"Authorization": f"Bearer {clerk_session.token()}"}
+        headers = {**deployment_headers(), "Authorization": f"Bearer {clerk_session.token()}"}
         if raw_body is not None:
             headers["Content-Type"] = "application/json"
             return requests.post(f"{base_url}{path}", data=raw_body, headers=headers, timeout=TIMEOUT)
