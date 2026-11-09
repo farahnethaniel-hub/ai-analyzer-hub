@@ -22,7 +22,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
-      BASE_URL: ${{ github.event.inputs.base_url || github.event.deployment_status.environment_url || 'https://ai-analyzer-hub.vercel.app' }}
+      # Production deploys are tested on the public domain; the per-deployment URL sits behind Vercel login.
+      BASE_URL: ${{ github.event.inputs.base_url || 'https://ai-analyzer-hub.vercel.app' }}
       RUN_LIVE_AI: ${{ github.event.inputs.run_live_ai == 'true' && '1' || '0' }}
       CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
       CLERK_TEST_USER_ID: ${{ secrets.CLERK_TEST_USER_ID }}

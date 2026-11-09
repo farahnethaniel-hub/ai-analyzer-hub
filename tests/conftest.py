@@ -59,9 +59,12 @@ def deployment_headers() -> dict[str, str]:
 def deployment_is_reachable(base_url: str) -> None:
     """Fail fast with one clear message when Vercel's login wall answers instead of the app."""
     response = requests.get(base_url, headers=deployment_headers(), timeout=TIMEOUT)
-    if response.status_code == 401 and "vercel" in response.text.lower():
+    login_wall = "vercel.com/login" in response.url or "vercel.com/sso" in response.url or (
+        response.status_code == 401 and "vercel" in response.text.lower()
+    )
+    if login_wall or "AI Analyzer Hub" not in response.text:
         pytest.exit(
-            f"{base_url} is behind Vercel Authentication. "
+            f"{base_url} did not serve the app (likely behind Vercel Authentication). "
             "Set VERCEL_AUTOMATION_BYPASS_SECRET or test the production URL.",
             returncode=2,
         )
