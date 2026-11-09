@@ -18,7 +18,7 @@ export default function AnalyzeButton({
     <button
       onClick={onClick}
       disabled={disabled || loading}
-      className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-blue-600 px-10 py-4 text-lg font-bold text-white transition hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-40 sm:w-auto"
+      className="btn-lift flex w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-blue-600 px-10 py-4 text-lg font-bold text-white hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-40 sm:w-auto"
     >
       {loading && <Loader2 className="animate-spin" size={20} />}
       {loading ? loadingLabel : label}

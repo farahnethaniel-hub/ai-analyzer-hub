@@ -52,7 +52,7 @@ export default function Report({
 
       <button
         onClick={onReset}
-        className="mt-8 cursor-pointer rounded-full border border-white/15 px-6 py-2.5 text-sm font-bold text-neutral-300 transition hover:border-white/40 hover:text-white"
+        className="btn-lift mt-8 cursor-pointer rounded-full border border-white/15 px-6 py-2.5 text-sm font-bold text-neutral-300 hover:border-white/40 hover:text-white"
       >
         {resetLabel}
       </button>

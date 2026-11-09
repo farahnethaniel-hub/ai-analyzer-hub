@@ -12,6 +12,95 @@ body {
   font-family: var(--font-heebo), system-ui, sans-serif;
 }
 
+/* ---------- Hover motion ---------- */
+:root {
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Text that draws an underline from the reading edge (right, in Hebrew) on hover */
+.link-underline {
+  position: relative;
+}
+.link-underline::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: -3px;
+  height: 1.5px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 320ms var(--ease-out);
+}
+a:hover .link-underline::after,
+a:focus-visible .link-underline::after,
+.link-underline:hover::after,
+.group:hover .link-underline::after {
+  transform: scaleX(1);
+}
+
+/* Back link: the arrow nudges toward where it leads */
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0;
+  transition: color 200ms ease;
+}
+.back-link__arrow {
+  transition: transform 320ms var(--ease-out);
+}
+.back-link:hover .back-link__arrow,
+.back-link:focus-visible .back-link__arrow {
+  transform: translateX(5px);
+}
+
+/* "Open tool" link on the cards */
+.cta-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.cta-link__arrow {
+  transition: transform 320ms var(--ease-out);
+}
+.group:hover .cta-link__arrow {
+  transform: translateX(-6px);
+}
+
+/* Buttons rise a touch on hover and press down on click */
+.btn-lift {
+  transition: transform 220ms var(--ease-out), box-shadow 220ms var(--ease-out), background-color 200ms ease,
+    border-color 200ms ease, color 200ms ease;
+}
+.btn-lift:not(:disabled):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px -12px rgba(59, 130, 246, 0.55);
+}
+.btn-lift:not(:disabled):active {
+  transform: translateY(0) scale(0.97);
+  box-shadow: none;
+}
+
+/* The logo mark turns a little on hover */
+.logo-link span:first-child {
+  transition: transform 320ms var(--ease-out), border-color 200ms ease;
+}
+.logo-link:hover span:first-child {
+  transform: rotate(-8deg);
+  border-color: rgba(96, 165, 250, 0.7);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .link-underline::after,
+  .back-link__arrow,
+  .cta-link__arrow,
+  .btn-lift,
+  .logo-link span:first-child {
+    transition: none;
+  }
+}
+
 /* Markdown reports returned by the AI */
 .report {
   color: #d4d4d4;
