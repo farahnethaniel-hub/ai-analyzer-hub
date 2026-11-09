@@ -1,0 +1,44 @@
+name: API tests
+
+on:
+  push:
+    branches: [main, api-tests]
+  pull_request:
+  deployment_status:
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: Deployment to test
+        default: https://ai-analyzer-hub.vercel.app
+      run_live_ai:
+        description: Also run the tests that call Gemini (spends quota)
+        type: boolean
+        default: false
+
+jobs:
+  pytest:
+    # On deployment events, only test successful production deployments.
+    if: github.event_name != 'deployment_status' || (github.event.deployment_status.state == 'success' && github.event.deployment.environment == 'Production')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      BASE_URL: ${{ github.event.inputs.base_url || github.event.deployment_status.environment_url || 'https://ai-analyzer-hub.vercel.app' }}
+      RUN_LIVE_AI: ${{ github.event.inputs.run_live_ai == 'true' && '1' || '0' }}
+      CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
+      CLERK_TEST_USER_ID: ${{ secrets.CLERK_TEST_USER_ID }}
+      VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: tests/requirements.txt
+      - run: pip install -r tests/requirements.txt
+      - name: Run tests against ${{ env.BASE_URL }}
+        run: pytest -v --junitxml=report.xml
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pytest-report
+          path: report.xml

@@ -44,3 +44,26 @@ Create a `.env.local` file in the root folder and add your own API keys. **Do no
 
 ## 🔒 Security
 This project is built with security in mind. All sensitive keys are managed via environment variables and are **not** included in the source code.
+
+## API tests
+
+An integration test suite in Python (pytest + requests) runs against a live deployment over HTTP, so it exercises the real stack: routing, Clerk auth, input validation and error responses.
+
+| File | What it checks |
+| --- | --- |
+| `tests/test_pages.py` | Public pages load, Hebrew RTL markup, unknown pages return 404 |
+| `tests/test_api_auth.py` | Every analysis endpoint rejects anonymous and forged-token calls (401) and non-POST methods (405) |
+| `tests/test_api_validation.py` | Signed-in requests with bad input get a clear 400/404 before any AI call |
+| `tests/test_api_live.py` | Full analyses return a scored report with the expected sections (opt-in, spends Gemini quota) |
+
+```bash
+pip install -r tests/requirements.txt
+pytest                                   # anonymous tests against production
+BASE_URL=https://<preview>.vercel.app pytest
+CLERK_SECRET_KEY=sk_... CLERK_TEST_USER_ID=user_... pytest   # adds the signed-in tests
+RUN_LIVE_AI=1 ...                        # adds the live AI tests
+```
+
+The signed-in tests open a short-lived session for a dedicated Clerk test user through the Clerk Backend API and send a fresh session token with every request.
+
+GitHub Actions (`.github/workflows/api-tests.yml`) runs the suite on every push, on pull requests, after each successful production deployment, and on demand.

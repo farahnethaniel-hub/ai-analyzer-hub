@@ -1,7 +1,6 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { CheckCircle2, FileText, Upload } from "lucide-react";
-import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf.mjs";
 import ToolLayout from "@/components/ToolLayout";
 import Report from "@/components/Report";
 import AnalyzeButton, { ErrorNote } from "@/components/AnalyzeButton";
@@ -9,7 +8,19 @@ import { requestReport, type ReportResult } from "@/lib/request";
 
 const MAX_FILE_MB = 5;
 
+/**
+ * pdf.js touches browser-only globals (DOMMatrix and friends) as soon as it is imported,
+ * so it is loaded on demand in the browser. Importing it at the top of the module made the
+ * server render of this page crash with a 500 whenever it was opened directly.
+ */
+async function loadPdfJs() {
+  const pdfjsLib = await import("pdfjs-dist/legacy/build/pdf.mjs");
+  pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/legacy/build/pdf.worker.min.mjs`;
+  return pdfjsLib;
+}
+
 async function readPdfText(file: File) {
+  const pdfjsLib = await loadPdfJs();
   const data = await file.arrayBuffer();
   const pdf = await pdfjsLib.getDocument({ data, isEvalSupported: false, useSystemFonts: true }).promise;
   let text = "";
@@ -27,10 +38,6 @@ export default function CVAnalyzer() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<ReportResult | null>(null);
-
-  useEffect(() => {
-    pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/legacy/build/pdf.worker.min.mjs`;
-  }, []);
 
   const pickFile = (f: File | null) => {
     setError(null);

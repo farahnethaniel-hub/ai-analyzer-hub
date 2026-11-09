@@ -24,16 +24,17 @@ export default function ToolLayout({
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
-      className="mx-auto w-full max-w-3xl px-5 pb-20 pt-8"
+      className="w-full pb-20 pt-6"
     >
-      <Link
-        href="/"
-        className="inline-flex items-center gap-2 text-sm font-semibold text-neutral-500 transition-colors hover:text-white"
-      >
-        <ArrowRight size={16} />
-        כל הכלים
-      </Link>
+      {/* The back link sits against the page edge, in line with the header */}
+      <div className="px-5 sm:px-8">
+        <Link href="/" className="back-link text-sm font-semibold text-neutral-500 hover:text-white">
+          <ArrowRight size={16} className="back-link__arrow" />
+          <span className="link-underline">כל הכלים</span>
+        </Link>
+      </div>
 
+      <div className="mx-auto max-w-3xl px-5">
       <div className="mt-8 mb-10 flex flex-col items-center text-center">
         <div className="mb-5 rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-blue-400">{icon}</div>
         <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl">{title}</h1>
@@ -50,12 +51,13 @@ export default function ToolLayout({
           <h2 className="mb-2 text-xl font-bold">צריך להתחבר</h2>
           <p className="mb-7 leading-relaxed text-neutral-400">{lockedText}</p>
           <SignInButton mode="modal">
-            <button className="w-full max-w-[240px] cursor-pointer rounded-full bg-white px-8 py-3 font-bold text-black transition hover:bg-neutral-200">
+            <button className="btn-lift w-full max-w-[240px] cursor-pointer rounded-full bg-white px-8 py-3 font-bold text-black hover:bg-neutral-200">
               התחברות
             </button>
           </SignInButton>
         </div>
       </SignedOut>
+      </div>
     </motion.main>
   );
 }
