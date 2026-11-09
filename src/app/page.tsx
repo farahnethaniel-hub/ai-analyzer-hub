@@ -28,7 +28,7 @@ export default function Home() {
       <section className="flex flex-col items-center pt-20 pb-16 text-center">
         <p className="mb-4 rounded-full border border-white/10 px-4 py-1 text-sm text-neutral-400">מופעל על ידי Google Gemini</p>
         <h1 className="max-w-3xl bg-gradient-to-b from-white to-neutral-500 bg-clip-text text-4xl font-extrabold leading-tight tracking-tight text-transparent sm:text-6xl">
-          ניתוח מקצועי בעזרת AI, בכמה שניות
+          ניתוח מקצועי באמצעות AI
         </h1>
         <p className="mt-5 max-w-xl text-lg leading-relaxed text-neutral-400">
           שלושה כלים במקום אחד: קורות חיים מול משרה, Code Review לפרויקטים, וניתוח חשבון אינסטגרם עסקי.
